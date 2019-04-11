@@ -1,8 +1,8 @@
 # Script
 
-const SIGHASH_ALL = 1
-const SIGHASH_NONE = 2
-const SIGHASH_SINGLE = 3
+const SIGHASH_ALL = UInt32(1)
+const SIGHASH_NONE = UInt32(2)
+const SIGHASH_SINGLE = UInt32(3)
 
 const SCRIPT_TYPES = Dict([
     ("P2PKH", [0x6f, 0x00]),
@@ -40,6 +40,24 @@ const TX_DATA_TYPE = 1
 const BLOCK_DATA_TYPE = 2
 const FILTERED_BLOCK_DATA_TYPE = 3
 const COMPACT_BLOCK_DATA_TYPE = 4
+
+const DATA_MESSAGE_NAME = Dict([
+    (1, "MSG_TX"),
+    (2, "MSG_BLOCK"),
+    (3, "MSG_FILTERED_BLOCK"),
+    (4, "MSG_CMPCT_BLOCK"),
+    (5, "MSG_WITNESS_BLOCK"),
+    (6, "MSG_WITNESS_TX"),
+    (7, "MSG_FILTERED_WITNESS_BLOCK")])
+
+const DATA_MESSAGE_TYPE = Dict([
+    ("MSG_TX", 1),
+    ("MSG_BLOCK", 2),
+    ("MSG_FILTERED_BLOCK", 3),
+    ("MSG_CMPCT_BLOCK", 4),
+    ("MSG_WITNESS_BLOCK", 5),
+    ("MSG_WITNESS_TX", 6),
+    ("MSG_FILTERED_WITNESS_BLOCK", 7)])
 
 """
 NETWORK_MAGIC is testnet if `true`
