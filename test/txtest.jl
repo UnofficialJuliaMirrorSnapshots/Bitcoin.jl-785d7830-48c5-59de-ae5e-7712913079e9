@@ -1,3 +1,4 @@
+using Secp256k1
 using Base58: base58checkdecode
 
 @testset "Transaction" begin
@@ -75,45 +76,45 @@ using Base58: base58checkdecode
         @test Bitcoin.sig_hash(tx, 0) == want
     end
     @testset "hash_prevouts" begin
-        tx = fetch("d869f854e1f8788bcff294cc83b280942a8c728de71eb709a2c29d10bfe21b7c", true)
+        tx = get_tx("d869f854e1f8788bcff294cc83b280942a8c728de71eb709a2c29d10bfe21b7c", testnet=true)
         want = hex2bytes("7fe72cb4866759324e1f158d0482fcc49015b0987966d80624dcc2db24638999")
         @test Bitcoin.hash_prevouts(tx) == want
     end
     @testset "Verify" begin
         @testset "P2PKH" begin
-            tx = fetch("452c629d67e41baec3ac6f04fe744b4b9617f8f859c63b3002f8684e7a4fee03")
+            tx = get_tx("452c629d67e41baec3ac6f04fe744b4b9617f8f859c63b3002f8684e7a4fee03")
             @test verify(tx)
-            tx = fetch("5418099cc755cb9dd3ebc6cf1a7888ad53a1a3beb5a025bce89eb1bf7f1650a2", true)
+            tx = get_tx("5418099cc755cb9dd3ebc6cf1a7888ad53a1a3beb5a025bce89eb1bf7f1650a2", testnet=true)
             @test verify(tx)
         end
         @testset "P2SH" begin
             println("Testing P2SH...")
-            tx = fetch("46df1a9484d0a81d03ce0ee543ab6e1a23ed06175c104a178268fad381216c2b")
+            tx = get_tx("46df1a9484d0a81d03ce0ee543ab6e1a23ed06175c104a178268fad381216c2b")
             @test verify(tx)
         end
         @testset "P2WPKH" begin
             println("Testing P2WPKH...")
-            tx = fetch("d869f854e1f8788bcff294cc83b280942a8c728de71eb709a2c29d10bfe21b7c", true)
+            tx = get_tx("d869f854e1f8788bcff294cc83b280942a8c728de71eb709a2c29d10bfe21b7c", testnet=true)
             @test verify(tx)
         end
         @testset "P2SH-P2WPKH" begin
             println("Testing P2SH-P2WPKH...")
-            tx = fetch("c586389e5e4b3acb9d6c8be1c19ae8ab2795397633176f5a6442a261bbdefc3a")
+            tx = get_tx("c586389e5e4b3acb9d6c8be1c19ae8ab2795397633176f5a6442a261bbdefc3a")
             @test verify(tx)
         end
         @testset "P2WSH" begin
             println("Testing P2WSH...")
-            tx = fetch("78457666f82c28aa37b74b506745a7c7684dc7842a52a457b09f09446721e11c", true)
+            tx = get_tx("78457666f82c28aa37b74b506745a7c7684dc7842a52a457b09f09446721e11c", testnet=true)
             @test verify(tx)
         end
         @testset "P2SH-P2WSH" begin
             println("Testing P2SH-P2WSH...")
-            tx = fetch("954f43dbb30ad8024981c07d1f5eb6c9fd461e2cf1760dd1283f052af746fc88", true)
+            tx = get_tx("954f43dbb30ad8024981c07d1f5eb6c9fd461e2cf1760dd1283f052af746fc88", testnet=true)
             @test verify(tx)
         end
     end
     @testset "Sign Input" begin
-        private_key = PrivateKey(8675309)
+        keypair = KeyPair{:ECDSA}(8675309)
         tx_ins = TxIn[]
         prev_tx = hex2bytes("0025bc3c0fa8b7eb55b9437fdbd016870d18e0df0ace7bc9864efc38414147c8")
         push!(tx_ins, TxIn(prev_tx, 0))
@@ -123,7 +124,7 @@ using Base58: base58checkdecode
         h160 = base58checkdecode(b"mnrVtF8DWjMu839VW3rBfgYaAfKk8983Xf")[2:end]
         push!(tx_outs, TxOut(Int(0.1 * 100000000), Bitcoin.p2pkh_script(h160)))
         tx = Tx(1, tx_ins, tx_outs, 0, true)
-        @test txsigninput(tx, 0, private_key)
+        @test txsigninput(tx, 0, keypair)
     end
     @testset "Is CoinbaseTx" begin
         raw_tx = hex2bytes("01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5e03d71b07254d696e656420627920416e74506f6f6c20626a31312f4542312f4144362f43205914293101fabe6d6d678e2c8c34afc36896e7d9402824ed38e856676ee94bfdb0c6c4bcd8b2e5666a0400000000000000c7270000a5e00e00ffffffff01faf20b58000000001976a914338c84849423992471bffb1a54a8d9b1d69dc28a88ac00000000")

@@ -1,6 +1,6 @@
-using Test, Bitcoin, ECC, Sockets
+using Test, Bitcoin, Sockets
 
-tests = ["script", "tx", "CompactSizeUInt", "murmur3", "bloomfilter", "merkle", "address", "op", "helper", "network", "block"]
+tests = ["rpc", "script", "tx", "CompactSizeUInt", "murmur3", "bloomfilter",  "address", "op", "helper", "network", "block"]
 
 for t ∈ tests
   include("$(t)test.jl")
