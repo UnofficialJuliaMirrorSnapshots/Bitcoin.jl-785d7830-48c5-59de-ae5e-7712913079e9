@@ -18,7 +18,7 @@ Compressed is set to true if not provided.
 Testnet is set to false by default.
 """
 function point2address(P::T, compressed::Bool=true, testnet::Bool=false, type::String="P2PKH") where {T<:Secp256k1.Point}
-    s = serialize(P, compressed=compressed)
+    s = Secp256k1.serialize(P, compressed=compressed)
     h160 = ripemd160(sha256(s))
     return h160_2_address(h160, testnet, type)
 end

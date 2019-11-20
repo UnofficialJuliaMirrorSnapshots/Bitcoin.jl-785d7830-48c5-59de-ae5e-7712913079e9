@@ -10,6 +10,7 @@ version = "0.1.12"
 [deps]
 Base58 = "a832ea1e-0ca7-55ca-a41a-6462721bb861"
 BitConverter = "3a3ce9e8-98e7-11e9-0fa0-055639f146d3"
+BitcoinPrimitives = "9d766032-97e2-11e9-15bd-efb533ad7bdc"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 MerkleTrees = "06dfef30-8e85-11e9-0a8e-cb6ed32fdbef"

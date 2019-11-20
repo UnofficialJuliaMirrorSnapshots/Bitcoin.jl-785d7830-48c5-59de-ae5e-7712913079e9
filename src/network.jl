@@ -299,8 +299,8 @@ end
 
 struct HeadersMessage <: AbstractMessage
     command::String
-    headers::Vector{BlockHeader}
-    HeadersMessage(headers::Vector{BlockHeader}) = new("headers", headers)
+    headers::Vector{BitcoinPrimitives.Header}
+    HeadersMessage(headers::Vector{BitcoinPrimitives.Header}) = new("headers", headers)
 end
 
 """
@@ -318,9 +318,9 @@ end
 
 function payload2headers(io::IOBuffer)
     num_headers = read_varint(io)
-    headers = BlockHeader[]
+    headers = BitcoinPrimitives.Header[]
     for i in 1:num_headers
-        push!(headers, io2blockheader(io))
+        push!(headers, Header(io))
         num_txs = read_varint(io)
         if num_txs != 0
             error("number of txs not 0")
@@ -382,13 +382,13 @@ end
 
 mutable struct MerkleBlockMessage <: AbstractMessage
     command::String
-    header::BlockHeader
+    header::BitcoinPrimitives.Header
     tx_count::UInt32
     hash_count::Unsigned
     hashes::Vector{Vector{UInt8}}
     flag_byte_count::Unsigned
     flags::Vector{Bool}
-    MerkleBlockMessage(header::BlockHeader, tx_count::Integer,
+    MerkleBlockMessage(header::BitcoinPrimitives.Header, tx_count::Integer,
                   hash_count, hashes::Vector{Vector{UInt8}}, flag_byte_count,
                   flags::Vector{Bool}) = new("merkleblock",
                   header, tx_count, hash_count, hashes, flag_byte_count, flags)
@@ -407,7 +407,7 @@ Parse MerkleBlockMessage from NetworkEnvelope payload
 """
 function payload2merkleblock(payload::Vector{UInt8})
     io = IOBuffer(payload)
-    header = io2blockheader(io)
+    header = BitcoinPrimitives.Header(io)
     tx_count = ltoh(reinterpret(UInt32, read(io, 4))[1])
     hash_count = read_varint(io)
     hashes = Vector{UInt8}[]
@@ -427,7 +427,7 @@ Returns true if MerkleBlockMessage is valid
 function is_valid(mb::MerkleBlockMessage)
     tree = MerkleTree(mb.tx_count)
     populate!(tree, mb.flags, mb.hashes)
-    root(tree) == mb.header.merkle_root
+    root(tree) == mb.header.merkleroot
 end
 
 struct FilterAddMessage <: AbstractMessage
@@ -556,7 +556,7 @@ PARSE_PAYLOAD = Dict([
     ("reject", payload2reject),
     ("sendcmpct", payload2sendcmpct),
     ("sendheaders", SendHeadersMessage),
-    ("tx", payload2tx),
+    ("tx", BitcoinPrimitives.Tx),
     ("verack", payload2verack),
     ("version", payload2version)
 ])

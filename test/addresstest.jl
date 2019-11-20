@@ -1,3 +1,5 @@
+using Secp256k1
+
 @testset "Bitcoin address functions" begin
         @testset "address" begin
                 secret = 888^3

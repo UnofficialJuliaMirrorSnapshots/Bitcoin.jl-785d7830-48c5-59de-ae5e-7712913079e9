@@ -1,3 +1,15 @@
+# Global variables
+
+chain = Symbol
+
+function set_chain(newchain::Symbol)
+    global chain = newchain
+end
+
+function get_chain()
+    return chain
+end
+
 # Script
 
 const SIGHASH_ALL = UInt32(1)
